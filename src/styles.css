@@ -16,22 +16,26 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: clamp(92px, 11vw, 132px);
-  scroll-snap-type: y mandatory;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
+  overflow: hidden;
   background: var(--desk-bg);
   color: var(--ink);
   font-family: Arial, "Helvetica Neue", "Noto Sans KR", sans-serif;
   line-height: 1.35;
 }
 
-a {
+a,
+button {
   color: inherit;
   text-decoration: none;
+}
+
+button {
+  font: inherit;
 }
 
 img {
@@ -63,6 +67,10 @@ img {
 }
 
 .brand {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0;
@@ -82,11 +90,21 @@ img {
   font-weight: 800;
 }
 
-.site-nav a {
+.site-nav a,
+.site-nav button {
+  border: 0;
   border-bottom: 1px solid transparent;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--black);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
-.site-nav a:hover {
+.site-nav a:hover,
+.site-nav button:hover,
+.site-nav button.is-active {
   border-color: var(--black);
 }
 
@@ -118,11 +136,13 @@ img {
   transform: translateY(0);
 }
 
-.nav-dropdown a {
+.nav-dropdown a,
+.nav-dropdown button {
   width: fit-content;
 }
 
-.nav-dropdown a.is-active {
+.nav-dropdown a.is-active,
+.nav-dropdown button.is-active {
   border-color: var(--black);
 }
 
@@ -151,6 +171,10 @@ main {
   padding: clamp(92px, 11vw, 132px) 0 0;
 }
 
+.screen-stage {
+  height: 100svh;
+}
+
 .board {
   position: relative;
   height: calc(100svh - clamp(92px, 11vw, 132px));
@@ -159,9 +183,6 @@ main {
   background: var(--sheet);
   border: 1px solid var(--line);
   box-shadow: 0 34px 90px rgba(0, 0, 0, 0.12);
-  scroll-margin-top: clamp(92px, 11vw, 132px);
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
 }
 
 .board::before,
@@ -278,6 +299,7 @@ main {
 }
 
 .connect-panel a,
+.connect-panel button,
 .button,
 .contact-links a {
   display: inline-flex;
@@ -289,6 +311,8 @@ main {
   padding: 0 24px;
   font-size: 0.78rem;
   font-weight: 800;
+  background: transparent;
+  cursor: pointer;
 }
 
 .hero-actions {
@@ -1042,9 +1066,11 @@ main {
     display: flex;
   }
 
-  .site-nav a {
+  .site-nav a,
+  .site-nav button {
     width: 100%;
     padding: 10px 0;
+    text-align: left;
   }
 
   main,
@@ -1056,13 +1082,8 @@ main {
     padding-top: 86px;
   }
 
-  html {
-    scroll-padding-top: 86px;
-  }
-
   .board {
     height: calc(100svh - 86px);
-    scroll-margin-top: 86px;
   }
 
   .hero,

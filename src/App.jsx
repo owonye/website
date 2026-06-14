@@ -112,31 +112,28 @@ const awards = [
 
 const keywords = ["Research", "Backend", "AI Service", "Data", "UX", "System Design"];
 
-function Header({ activeFilter, setActiveFilter }) {
+function Header({ activeFilter, currentPage, setActiveFilter, setCurrentPage }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
-
-  useEffect(() => {
-    const syncHeader = () => setIsScrolled(window.scrollY > 16);
-
-    syncHeader();
-    window.addEventListener("scroll", syncHeader, { passive: true });
-
-    return () => window.removeEventListener("scroll", syncHeader);
-  }, []);
 
   const chooseFilter = (filter) => {
     setActiveFilter(filter);
+    setCurrentPage("portfolio");
+    setIsOpen(false);
+    setIsPortfolioOpen(false);
+  };
+
+  const openPage = (page) => {
+    setCurrentPage(page);
     setIsOpen(false);
     setIsPortfolioOpen(false);
   };
 
   return (
-    <header className={`site-header ${isScrolled ? "is-scrolled" : ""} ${isOpen ? "is-open" : ""}`}>
-      <a className="brand" href="#about" aria-label="Yeowon Jeon about me">
+    <header className={`site-header is-scrolled ${isOpen ? "is-open" : ""}`}>
+      <button className="brand" type="button" onClick={() => openPage("about")} aria-label="Yeowon Jeon about me">
         YEOWON JEON
-      </a>
+      </button>
       <span className="header-year">2026</span>
       <button
         className="nav-toggle"
@@ -148,47 +145,60 @@ function Header({ activeFilter, setActiveFilter }) {
         <span></span>
       </button>
       <nav className="site-nav">
-        <a href="#about" onClick={() => setIsOpen(false)}>
+        <button
+          className={currentPage === "about" ? "is-active" : ""}
+          type="button"
+          onClick={() => openPage("about")}
+        >
           about me
-        </a>
+        </button>
         <div
           className="nav-group"
           onMouseEnter={() => setIsPortfolioOpen(true)}
           onMouseLeave={() => setIsPortfolioOpen(false)}
         >
-          <a
-            href="#portfolio"
+          <button
+            className={currentPage === "portfolio" ? "is-active" : ""}
+            type="button"
             onClick={() => chooseFilter("all")}
             onFocus={() => setIsPortfolioOpen(true)}
             aria-expanded={isPortfolioOpen}
           >
             portfolio
-          </a>
+          </button>
           <div className="nav-dropdown">
             {filters.slice(1).map((filter) => (
-              <a
+              <button
                 className={activeFilter === filter ? "is-active" : ""}
-                href="#portfolio"
+                type="button"
                 key={filter}
                 onClick={() => chooseFilter(filter)}
               >
                 {filter}
-              </a>
+              </button>
             ))}
           </div>
         </div>
-        <a href="#awards" onClick={() => setIsOpen(false)}>
+        <button
+          className={currentPage === "awards" ? "is-active" : ""}
+          type="button"
+          onClick={() => openPage("awards")}
+        >
           awards
-        </a>
-        <a href="#contact" onClick={() => setIsOpen(false)}>
+        </button>
+        <button
+          className={currentPage === "contact" ? "is-active" : ""}
+          type="button"
+          onClick={() => openPage("contact")}
+        >
           contact
-        </a>
+        </button>
       </nav>
     </header>
   );
 }
 
-function AboutMe() {
+function AboutMe({ onOpenPortfolio }) {
   return (
     <section className="hero board" id="about">
       <div className="hero-topline">
@@ -220,7 +230,9 @@ function AboutMe() {
               <dd>2026</dd>
             </div>
           </dl>
-          <a href="#portfolio">View portfolio</a>
+          <button type="button" onClick={onOpenPortfolio}>
+            View portfolio
+          </button>
         </div>
       </div>
       <div className="about-panel">
@@ -366,15 +378,25 @@ function Contact() {
 
 export default function App() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState("about");
+
+  const pages = {
+    about: <AboutMe onOpenPortfolio={() => setCurrentPage("portfolio")} />,
+    portfolio: <Portfolio activeFilter={activeFilter} setActiveFilter={setActiveFilter} />,
+    awards: <Awards />,
+    contact: <Contact />,
+  };
 
   return (
     <>
-      <Header activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-      <main>
-        <AboutMe />
-        <Portfolio activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <Awards />
-        <Contact />
+      <Header
+        activeFilter={activeFilter}
+        currentPage={currentPage}
+        setActiveFilter={setActiveFilter}
+        setCurrentPage={setCurrentPage}
+      />
+      <main className="screen-stage">
+        {pages[currentPage]}
       </main>
       <footer className="site-footer">
         <span>Yeowon Jeon</span>
